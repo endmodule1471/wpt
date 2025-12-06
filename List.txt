@@ -1,0 +1,84 @@
+import { useState,useEffect } from "react";
+
+import axios from "axios";
+import { useNavigate } from 'react-router-dom';
+
+
+const PlayerList=()=>{
+    const navigate=useNavigate();
+
+const [list,setList]=useState([]);
+
+const fetchData=async ()=>{
+    try{
+const res=await axios.get("http://localhost:8088/get");
+setList(res.data.data);
+alert("Player Addded Successfully")
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+const deleteByName=async (name)=>{
+     try{
+    await axios.delete(`http://localhost:8088/delete/${name}`);
+     fetchData();
+      }
+    catch(error){
+        console.log(error);
+    }
+
+}
+useEffect(()=>{
+fetchData()
+}, []);
+return(
+<div>
+<div>
+    <button onClick={() => navigate("/add")}>  Add Employee </button>
+</div>
+
+<table>
+<thead>
+    <tr>
+        <th>name   </th>
+        <th>matches</th>
+        <th>runs </th>
+        <th>fiftys</th>
+        <th>hundreds</th>
+        <th>team</th>
+        <th>delete</th>
+        <th>edit</th>
+    </tr>
+</thead>
+<tbody>
+    {list.map((e)=>(
+        <tr key={e.id}>
+        <td>{e.name}</td>
+        <td>{e.matches}</td>
+        <td>{e.runs}</td>
+        <td>{e.fiftys}</td>
+        <td>{e.hundreds}</td>
+        <td>{e.team}</td>
+       
+        <td><button onClick={()=>deleteByName(e.name)}>
+            Delete
+            </button></td>
+            <td><button onClick={() => navigate("/update",{state:{name:e.name,matches:e.matches,runs:e.runs,fiftys:e.fiftys,hundreds:e.hundreds,team:e.team}})}>
+            Update
+            </button></td>
+        {/* <td><button onClick={() => navigate("/add")}>  update Employee </button></td> */}
+
+
+        </tr>
+    ))}
+</tbody>
+
+</table>
+
+
+</div>
+);
+
+}
+export default PlayerList;
