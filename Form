@@ -1,0 +1,55 @@
+import { useState} from "react";
+
+import axios from "axios";//frontend to backend data transfer
+import { useNavigate } from 'react-router-dom';
+
+
+export default function AddPlayer(){
+    const navigate=useNavigate();
+    const [form ,setForm]=useState({
+            name:"",
+            matches:"",
+            runs:"",
+            fiftys: "",
+            hundreds:"",
+            team: ""
+    })
+    
+    const handleChange=(e)=>{
+setForm({...form,[e.target.name]:e.target.value})
+    };
+    const handleSubmit= async ()=>{
+        try{
+await axios.post("http://localhost:8088/add",form);
+alert("Player Added Successfully")
+setForm({
+     name:"",
+            matches:"",
+            runs:"",
+            fiftys: "",
+            hundreds:"",
+            team: ""
+})
+        }
+        catch(error){
+            console.log(error);
+        }
+    }
+
+return(
+<div>
+<form  onSubmit={handleSubmit}>
+    <div>
+<label>Player Name: </label><input type="text" name="name" value={form.name} onChange={handleChange}></input>   </div>
+<div><label>Player matches: </label><input type="text" name="matches" value={form.matches} onChange={handleChange}></input></div>
+<div><label>Player runs: </label><input type="text" name="runs" value={form.runs} onChange={handleChange}></input></div>
+<div><label>Player fiftys: </label><input type="text" name="fiftys" value={form.fiftys} onChange={handleChange}></input></div>
+<div><label>Player hundreds: </label><input type="text" name="hundreds" value={form.hundreds} onChange={handleChange}></input></div>
+<div><label>Player team: </label><input type="text" name="team" value={form.team} onChange={handleChange}></input></div>
+ <div><button>Submit</button></div>
+ <div><button onClick={()=>{navigate("/")}}>Player Table</button></div>
+    </form>
+</div>
+);
+
+}
